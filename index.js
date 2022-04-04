@@ -144,6 +144,7 @@ async function run() {
     const eidCollection = database.collection(
       `${process.env.DB_COLLECTION_EID2022}`
     );
+
     app.post("/eid/2022/participant/add", async (req, res) => {
       const participant = req.body;
       delete participant._id;
@@ -169,6 +170,42 @@ async function run() {
       } else {
         console.log("No documents matched the query. Deleted 0 documents.");
       }
+    });
+
+    //All TBPL participants
+
+    const participantCollection = database.collection(
+      `${process.env.DB_COLLECTION_PARTICIPANTS}`
+    );
+
+    app.get("/2022/participants/all", (req, res) => {
+      participantCollection.find().toArray((err, items) => {
+        res.send(items);
+        err && console.log(err);
+      });
+    });
+
+    app.post("/participant/add/2022", async (req, res) => {
+      const participant = req.body;
+      delete participant._id;
+      const result = await participantCollection.insertOne(participant);
+      console.log(`A document was inserted with the _id: ${result.insertedId}`);
+      res.json({
+        msg: `A tbpl participant is added with the _id: ${result.insertedId}`,
+      });
+    });
+
+    app.post("/participant/2022/del/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = participantCollection.deleteOne({ email: email });
+      if (result.deletedCount === 1) {
+        console.log("Successfully deleted one document.");
+      } else {
+        console.log("No documents matched the query. Deleted 0 documents.");
+      }
+      res.json({
+        msg: `A TBPL participant Signed out!!`,
+      });
     });
   } finally {
     //await client.close();
