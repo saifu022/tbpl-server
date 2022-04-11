@@ -155,6 +155,21 @@ async function run() {
       });
     });
 
+    app.post("/eid/2022/participant/edit:id", async (req, res) => {
+      const id = bson.ObjectId(req.params.id);
+      const participant = req.body;
+      delete participant._id;
+      const result = await eventsCollection.updateOne(
+        { _id: id },
+        { $set: participant },
+        { upsert: false }
+      );
+      {
+        result.modifiedCount && console.log(`Event updated _id: ${id}`);
+      }
+      res.json(participant);
+    });
+
     app.get("/eid/2022/participants/all", (req, res) => {
       eidCollection.find().toArray((err, items) => {
         res.send(items);
