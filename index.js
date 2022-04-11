@@ -159,7 +159,7 @@ async function run() {
       const id = bson.ObjectId(req.params.id);
       const participant = req.body;
       delete participant._id;
-      const result = await eventsCollection.updateOne(
+      const result = await eidCollection.updateOne(
         { _id: id },
         { $set: participant },
         { upsert: false }
