@@ -155,7 +155,7 @@ async function run() {
       });
     });
 
-    app.post("/eid/2022/participant/edit:id", async (req, res) => {
+    app.post("/eid/2022/participant/edit/:id", async (req, res) => {
       const id = bson.ObjectId(req.params.id);
       const participant = req.body;
       delete participant._id;
