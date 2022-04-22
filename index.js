@@ -51,6 +51,8 @@ async function run() {
         const userInfoFromDB = await userCollection.findOne({ email: email });
         res.json(userInfoFromDB);
       } else {
+        userInfoFromDB.error =
+          "An account is already existing with this email!";
         res.json(userInfoFromDB);
       }
     });
@@ -73,6 +75,35 @@ async function run() {
         res.json(userInfoFromDB);
       } else {
         res.json(userInfoFromDB);
+      }
+    });
+
+    app.post("/user/login", async (req, res) => {
+      const loginInfo = req.body;
+      const { formEmail, formPassword } = loginInfo;
+      const userInfoFromDB = await userCollection.findOne({ email: formEmail });
+      console.log(loginInfo, userInfoFromDB);
+      if (userInfoFromDB) {
+        if (!userInfoFromDB.password) {
+          res.json({
+            error:
+              "No password found for this email. Please Sign in with Google!",
+          });
+        } else {
+          if (userInfoFromDB.password === formPassword) {
+            res.json(userInfoFromDB);
+          } else {
+            res.json({
+              error:
+                "Password Incorrect! to reset password please call 0405601033",
+            });
+          }
+        }
+      } else {
+        res.json({
+          error:
+            "No account found for this email! please create a new account!",
+        });
       }
     });
 
