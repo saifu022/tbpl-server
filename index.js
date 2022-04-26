@@ -115,6 +115,7 @@ async function run() {
     });
 
     // ALL eventsCollection API
+
     const eventsCollection = database.collection(
       `${process.env.DB_COLLECTION_EVENTS}`
     );
